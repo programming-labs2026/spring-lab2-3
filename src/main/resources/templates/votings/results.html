@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{results.title(${results.title})}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+    <body class="bg-light min-vh-100 d-flex flex-column">
+        <div th:replace="~{fragments/header :: header}"></div>
+
+        <main class="container pb-4" style="max-width: 860px">
+    <a class="d-inline-block mb-3 link-secondary" th:href="@{/votings/{id}/vote(id=${results.votingId})}" th:text="#{results.back}"></a>
+
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                <h1 class="h2 mb-0" th:text="#{results.heading(${results.title})}"></h1>
+                <span th:replace="~{fragments/status :: badge(${results.status})}"></span>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+                        <h2 class="h4 mb-0" th:text="#{results.candidates.title}"></h2>
+                <span class="badge bg-body-secondary text-body border fs-6" th:text="#{results.total(${results.totalVotes})}"></span>
+                    </div>
+                    <p class="text-secondary" th:if="${results.totalVotes == 0}" th:text="#{results.empty}"></p>
+                    <div class="mb-4" th:each="candidate : ${results.candidates}">
+                        <div class="d-flex justify-content-between gap-3 mb-2">
+                            <strong th:text="${candidate.name}"></strong>
+                            <span class="text-secondary" th:text="#{results.candidate.votes(${candidate.votes})}"></span>
+                        </div>
+                        <div class="progress" role="progressbar" th:attr="aria-label=${candidate.name},aria-valuenow=${candidate.votes},aria-valuemax=${results.totalVotes}">
+                    <div class="progress-bar bg-secondary"
+                                 th:style="${'width: ' + (results.totalVotes == 0 ? 0 : candidate.votes * 100 / results.totalVotes) + '%'}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <label class="form-label fw-semibold" for="resultsUrl" th:text="#{results.link}"></label>
+                    <input id="resultsUrl" class="form-control" readonly th:value="${resultsUrl}">
+                </div>
+            </div>
+        </main>
+
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </body>
+</html>

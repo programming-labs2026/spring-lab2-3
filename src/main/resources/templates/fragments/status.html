@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <th:block th:fragment="badge(status)" th:switch="${status.name()}">
+        <span th:case="'DRAFT'" class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle" th:text="#{status.DRAFT}"></span>
+        <span th:case="'ACTIVE'" class="badge rounded-pill bg-success-subtle text-success-emphasis border border-success-subtle" th:text="#{status.ACTIVE}"></span>
+        <span th:case="'STOPPED'" class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle" th:text="#{status.STOPPED}"></span>
+        <span th:case="*" class="badge rounded-pill bg-body-secondary text-body border" th:text="${status}"></span>
+    </th:block>
+</body>
+</html>

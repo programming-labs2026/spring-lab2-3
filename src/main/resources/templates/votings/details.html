@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${voting.title}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+    <body class="bg-light min-vh-100 d-flex flex-column">
+
+        <div th:replace="~{fragments/header :: header}"></div>
+
+        <main class="container pb-4" style="max-width: 860px">
+
+            <a class="d-inline-block mb-3 link-secondary" th:href="@{/}" th:text="#{details.back}"></a>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                <div>
+                    <div class="mb-2">
+                        <span th:replace="~{fragments/status :: badge(${voting.status})}"></span>
+                    </div>
+                    <h1 class="h2 mb-1" th:text="${voting.title}"></h1>
+                    <p class="text-secondary mb-0" th:text="#{home.owner(${voting.ownerName})}"></p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-secondary" th:if="${voting.status.name() == 'DRAFT'}"
+                       th:href="@{/votings/{id}/edit(id=${voting.id})}" th:text="#{details.edit}"></a>
+                    <a class="btn btn-outline-secondary" th:href="@{/votings/{id}/vote(id=${voting.id})}"
+                       th:text="#{details.vote.open}"></a>
+                    <a class="btn btn-outline-dark" th:href="@{/votings/{id}/results(id=${voting.id})}"
+                       th:text="#{details.results}"></a>
+                </div>
+            </div>
+
+            <div class="alert alert-success" th:if="${messageKey}" th:text="#{${messageKey}}"></div>
+
+            <div class="alert alert-danger" th:if="${errorKey}" th:text="#{${errorKey}}"></div>
+
+            <section class="card border-0 shadow-sm mb-4" th:if="${voting.status.name() != 'STOPPED'}">
+              <div class="card-body p-4">
+                <h2 class="h4 mb-2" th:text="#{details.manage.title}"></h2>
+                <p class="small mb-3" th:if="${voting.status.name() == 'ACTIVE'}" th:text="#{details.manage.stop.hint}"></p>
+                  <form method="post" th:action="${voting.status.name() == 'DRAFT'} ? @{/votings/{id}/start(id=${voting.id})} : @{/votings/{id}/stop(id=${voting.id})}">
+                    <label class="form-label fw-semibold" for="ownerUserId" th:text="#{details.manage.owner}"></label>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <select id="ownerUserId" class="form-select" name="userId" required>
+                            <option value="" th:text="#{common.select.owner}"></option>
+                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
+                                    th:selected="${user.id == voting.ownerId}"></option>
+                        </select>
+                        <button class="btn text-nowrap"
+                            th:classappend="${voting.status.name() == 'DRAFT'} ? 'btn-dark' : 'btn-outline-secondary'" type="submit"
+                                th:text="${voting.status.name() == 'DRAFT'} ? #{details.manage.start} : #{details.manage.stop}"></button>
+                    </div>
+                  </form>
+              </div>
+            </section>
+
+            <section class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                <h2 class="h4 mb-2" th:text="#{details.links.title}"></h2>
+                <label class="form-label fw-semibold" for="votingUrl" th:text="#{details.links.voting}"></label>
+                <div class="input-group mb-3">
+                    <input id="votingUrl" class="form-control" readonly th:value="${votingUrl}">
+                    <a class="btn btn-outline-secondary" th:href="@{/votings/{id}(id=${voting.id})}" th:text="#{details.links.open}"></a>
+                </div>
+                <label class="form-label fw-semibold" for="resultsUrl" th:text="#{details.links.results}"></label>
+                <div class="input-group">
+                    <input id="resultsUrl" class="form-control" readonly th:value="${resultsUrl}">
+                    <a class="btn btn-outline-secondary" th:href="@{/votings/{id}/results(id=${voting.id})}" th:text="#{details.links.open}"></a>
+                </div>
+              </div>
+            </section>
+        </main>
+
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </body>
+</html>

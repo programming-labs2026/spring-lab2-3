@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: online-voting
+
+server:
+  servlet:
+    context-path: /online-voting

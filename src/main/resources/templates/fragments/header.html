@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <header th:fragment="header" class="border-bottom bg-white mb-4">
+            <nav class="container py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <a class="text-decoration-none fw-bold fs-5 text-dark" th:href="@{/}" th:text="#{app.name}"></a>
+                <a class="btn btn-outline-dark" th:href="@{/votings/new}" th:text="#{nav.create}"></a>
+            </nav>
+        </header>
+    </body>
+</html>

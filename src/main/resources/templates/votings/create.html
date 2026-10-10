@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{create.title}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+    <body class="bg-light min-vh-100 d-flex flex-column">
+        <div th:replace="~{fragments/header :: header}"></div>
+
+        <main class="container pb-4" style="max-width: 760px">
+            <a class="d-inline-block mb-3 link-secondary" th:href="@{/}" th:text="#{details.back}"></a>
+            <h1 class="h2 mb-4" th:text="#{create.title}"></h1>
+            <form class="card border shadow-sm" method="post" th:action="@{/votings}" th:object="${createVotingRequest}">
+              <div class="card-body p-4">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*')}">
+                    <div class="fw-semibold mb-1" th:text="#{create.check}"></div>
+                    <ul class="mb-0">
+                        <li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li>
+                    </ul>
+                </div>
+                <h2 class="h5 mb-3"><span class="badge bg-body-secondary text-body border me-2">1</span><span th:text="#{create.step.owner}"></span></h2>
+                <div class="mb-4">
+                    <label class="visually-hidden" for="ownerId" th:text="#{create.owner}"></label>
+                    <select id="ownerId" class="form-select" th:field="*{ownerId}" required>
+                        <option value="" th:text="#{common.select.user}"></option>
+                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+                    </select>
+                </div>
+                <hr class="my-4">
+                <h2 class="h5 mb-3"><span class="badge bg-body-secondary text-body border me-2">2</span><span th:text="#{create.step.question}"></span></h2>
+                <div class="mb-4">
+                    <label class="visually-hidden" for="title" th:text="#{create.topic}"></label>
+                    <input id="title" class="form-control" type="text" maxlength="255" th:field="*{title}"
+                           th:placeholder="#{create.topic.example}" required>
+                </div>
+                <hr class="my-4">
+                <h2 class="h5 mb-3"><span class="badge bg-body-secondary text-body border me-2">3</span><span th:text="#{create.step.candidates}"></span></h2>
+
+                <div class="mb-4">
+                    <div class="vstack gap-2" data-candidate-list>
+                        <div class="input-group" data-candidate-row th:each="candidateName, candidateIndex : *{candidateNames}">
+                            <span class="input-group-text" data-candidate-number
+                                  th:text="${candidateIndex.count}">1</span>
+                            <input class="form-control" type="text" name="candidateNames" maxlength="255" required
+                                   th:attr="aria-label=#{create.candidate.placeholder}" th:placeholder="#{create.candidate.placeholder}"
+                                   th:value="${candidateName}">
+                            <button th:if="${candidateIndex.index >= 2}" class="btn btn-outline-secondary"
+                                    type="button" data-remove-candidate
+                                    th:attr="aria-label=#{create.candidate.remove}">×</button>
+                        </div>
+                    </div>
+                    <template data-candidate-template>
+                        <div class="input-group" data-candidate-row>
+                            <span class="input-group-text" data-candidate-number></span>
+                            <input class="form-control" type="text" name="candidateNames" maxlength="255" required
+                                   th:attr="aria-label=#{create.candidate.placeholder}"
+                                   th:placeholder="#{create.candidate.placeholder}">
+                            <button class="btn btn-outline-secondary" type="button" data-remove-candidate
+                                    th:attr="aria-label=#{create.candidate.remove}">×</button>
+                        </div>
+                    </template>
+                    <button class="btn btn-outline-secondary mt-3" type="button" data-add-candidate th:text="#{create.candidate.add}"></button>
+                </div>
+
+                <button class="btn btn-dark px-4 text-nowrap" type="submit" th:text="#{create.submit}"></button>
+              </div>
+            </form>
+        </main>
+
+        <div th:replace="~{fragments/footer :: footer}"></div>
+
+        <script th:src="@{/js/candidate-fields.js}" defer></script>
+    </body>
+</html>

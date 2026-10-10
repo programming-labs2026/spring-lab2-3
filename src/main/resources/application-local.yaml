@@ -1,0 +1,33 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:online_voting;DB_CLOSE_DELAY=-1
+    username: online_voting_admin
+    password: "SecurePass_123!"
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  sql:
+    init:
+      mode: embedded
+      schema-locations: classpath:db/init/schema.sql
+      data-locations: classpath:db/init/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    open-in-view: false
+
+logging:
+  level:
+    com.evilcorp.onlinevoting: DEBUG
+
+voting:
+  public-base-url: http://localhost:8081/online-voting
